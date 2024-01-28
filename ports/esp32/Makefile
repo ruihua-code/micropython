@@ -30,7 +30,7 @@ endif
 
 # Device serial settings.
 PORT ?= /dev/ttyUSB0
-BAUD ?= 460800
+BAUD ?= 115200
 
 PYTHON ?= python3
 
