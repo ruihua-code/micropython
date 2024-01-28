@@ -9,7 +9,7 @@ ifdef BOARD_DIR
 BOARD ?= $(notdir $(BOARD_DIR:/=))
 else
 # If not given on the command line, then default to ESP32_GENERIC.
-BOARD ?= ESP32_GENERIC
+BOARD ?= ESP32_GENERIC_S3
 BOARD_DIR ?= boards/$(BOARD)
 endif
 
@@ -30,7 +30,7 @@ endif
 
 # Device serial settings.
 PORT ?= /dev/ttyUSB0
-BAUD ?= 460800
+BAUD ?= 115200
 
 PYTHON ?= python3
 
