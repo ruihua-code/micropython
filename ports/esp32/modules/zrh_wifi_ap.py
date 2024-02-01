@@ -6,6 +6,7 @@ import json
 import machine
 from zrh_wifi_html import html
 from zrh_response_json import ZrhResponseJson
+from zrh_led import ZrhLedBoard
 
 res_json = ZrhResponseJson()
 
@@ -26,6 +27,28 @@ async def set_wifi(request):
     zrh_wifi_nvs.set_wifi_nvs(ssid, pwd)
     res_json.success("配置wifi完成")
     asyncio.create_task(reboot())
+    return res_json.json()
+
+
+@app.get("/on_led")
+def get_on_led(request):
+    color_str = request.args.get("color")
+    zrh_led_board = ZrhLedBoard()
+    if color_str is not None:
+        color_arr = color_str.split(',')
+        color = tuple(list(map(int, color_arr)))
+        zrh_led_board.on_led(color)
+    else:
+        zrh_led_board.on_led((100, 100, 100))
+    res_json.success("成功")
+    return res_json.json()
+
+
+@app.get("/off_led")
+def get_off_led(request):
+    zrh_led_board = ZrhLedBoard()
+    zrh_led_board.off_led()
+    res_json.success("成功")
     return res_json.json()
 
 

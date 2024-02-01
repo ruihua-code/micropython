@@ -11,7 +11,7 @@ app = Microdot()
 def get_on_led(request):
     color_str = request.args.get("color")
     zrh_led_board = ZrhLedBoard()
-    if color_str != None:
+    if color_str is not None:
         color_arr = color_str.split(',')
         color = tuple(list(map(int, color_arr)))
         zrh_led_board.on_led(color)
