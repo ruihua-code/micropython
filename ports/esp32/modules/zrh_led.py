@@ -12,50 +12,50 @@ class ZrhLedBoard:
 
     def on_led(self, color):
         print("color:", color)
-        self.np.fill(color)
-        self.np.write()
+        ZrhLedBoard.np.fill(color)
+        ZrhLedBoard.np.write()
 
     def off_led(self):
-        print("self.task:", self.task)
-        if self.task is not None:
+        print("self.task:", ZrhLedBoard.task)
+        if ZrhLedBoard.task is not None:
             print("检查到任务...")
             self.off_led_line()
-        self.np.fill((0, 0, 0))
-        self.np.write()
+        ZrhLedBoard.np.fill((0, 0, 0))
+        ZrhLedBoard.np.write()
 
     # 生成随机的RGB颜色
 
-    def random_color(self):
+    def random_color():
         red = random.randint(10, 255)
         green = random.randint(10, 255)
         blue = random.randint(10, 255)
         return (red, green, blue)
 
-    async def run_line(self):
+    async def run_line():
         runs = [0, 1, 2]
-        self.np[runs[0]] = (self.random_color())
-        self.np[runs[1]] = (self.random_color())
-        self.np[runs[2]] = (self.random_color())
-        self.np.write()
+        ZrhLedBoard.np[runs[0]] = (ZrhLedBoard.random_color())
+        ZrhLedBoard.np[runs[1]] = (ZrhLedBoard.random_color())
+        ZrhLedBoard.np[runs[2]] = (ZrhLedBoard.random_color())
+        ZrhLedBoard.np.write()
 
         while True:
             await asyncio.sleep(0.1)
             # 最后一个灯关闭
-            self.np[runs[0]] = ((0, 0, 0))
-            self.np.write()
+            ZrhLedBoard.np[runs[0]] = ((0, 0, 0))
+            ZrhLedBoard.np.write()
 
             # 删除最后一个灯
             runs.remove(runs[0])
 
             # 在前面添加一个灯
-            runs.append((runs[-1]+1) % self.num_leds)
-            self.np[runs[-1]] = ((self.random_color()))
-            self.np.write()
+            runs.append((runs[-1]+1) % ZrhLedBoard.num_leds)
+            ZrhLedBoard.np[runs[-1]] = ((ZrhLedBoard.random_color()))
+            ZrhLedBoard.np.write()
 
     def on_led_line(self):
-        self.task = asyncio.create_task(self.run_line())
+        ZrhLedBoard.task = asyncio.create_task(ZrhLedBoard.run_line())
 
     def off_led_line(self):
-        self.task.cancel()
-        self.np.fill((0, 0, 0))
-        self.np.write()
+        ZrhLedBoard.task.cancel()
+        ZrhLedBoard.np.fill((0, 0, 0))
+        ZrhLedBoard.np.write()
