@@ -5,9 +5,9 @@ import asyncio
 
 
 class ZrhLedBoard:
-    num_leds = 80  # LED矩阵中LED的数量
+    num_leds = 64  # LED矩阵中LED的数量
     # 初始化NeoPixel
-    np = neopixel.NeoPixel(machine.Pin(18), num_leds)
+    np = neopixel.NeoPixel(machine.Pin(10), num_leds)
     task = None
 
     def on_led(self, color):

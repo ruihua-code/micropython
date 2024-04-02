@@ -1,1 +1,1 @@
-hostname = 'wood-chip'
+hostname = 'esp-c3-chip'
