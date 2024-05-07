@@ -53,7 +53,7 @@ async def init_wifi_page():
     await app.start_server(debug=True, port=80)
 
 
-def doAp():
+def do_ap():
     print("开始启动ap.....")
     init_ap()
     asyncio.run(init_wifi_page())

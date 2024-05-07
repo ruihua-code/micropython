@@ -1,8 +1,9 @@
-from zrh_wifi_ap import doAp
+from zrh_wifi_ap import do_ap
 from time import sleep
 import network
 from zrh_wifi_nvs import ZrhNvs
 from zrh_domain import hostname
+from machine import PWM, Pin
 
 
 def do_connect():
@@ -18,12 +19,11 @@ def do_connect():
 
     if not wlan.isconnected():
         print('--- 开始连接网格 ---')
-        global wifiConfig
         try:
             zrh_wifi_nvs = ZrhNvs()
-            wifiConfig = zrh_wifi_nvs.get_wifi_nvs()
-            print("wifiConfig:", wifiConfig)
-            wlan.connect(wifiConfig['ssid'], wifiConfig['password'])
+            wifi_config = zrh_wifi_nvs.get_wifi_nvs()
+            print("wifi_config:", wifi_config)
+            wlan.connect(wifi_config['ssid'], wifi_config['password'])
         except OSError as e:
             print("读取wifi配置信息失败")
 
@@ -38,6 +38,12 @@ def do_connect():
                 break
         if wlan.isconnected():
             print('连网成功:', wlan.ifconfig())
+            on_board_led()
         else:
             print("连接失败了,开启ap模式")
-            doAp()
+            do_ap()
+
+
+def on_board_led():
+    led2 = PWM(Pin(2))
+    led2.freq(1000)
