@@ -5,8 +5,11 @@ from zrh_wifi_nvs import ZrhNvs
 from zrh_domain import hostname
 from machine import PWM, Pin
 
+led2 = PWM(Pin(2))
+
 
 def do_connect():
+
     # 使用域名方式访问（esp.local）
     # wlan.config(dhcp_hostname=hostname)
 
@@ -41,9 +44,9 @@ def do_connect():
             on_board_led()
         else:
             print("连接失败了,开启ap模式")
+            led2.deinit()
             do_ap()
 
 
 def on_board_led():
-    led2 = PWM(Pin(2))
-    led2.freq(1000)
+    led2.freq(500)
