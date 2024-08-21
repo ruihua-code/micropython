@@ -25,6 +25,7 @@ async def set_wifi(request):
     zrh_wifi_nvs = ZrhNvs()
     zrh_wifi_nvs.set_wifi_nvs(ssid, pwd)
     res_json.success("配置wifi完成")
+    ap.active(False)
     asyncio.create_task(reboot())
     return res_json.json()
 
@@ -37,6 +38,7 @@ async def reboot():
 
 # 创建wifi热点，ssid=ESP-AP password=esp123456
 def init_ap():
+    global ap
     ap = network.WLAN(network.AP_IF)
     ap.active(True)
     ap.config(essid='ESP-AP', authmode=network.AUTH_WPA_WPA2_PSK,
