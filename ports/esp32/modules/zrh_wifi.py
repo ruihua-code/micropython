@@ -6,6 +6,8 @@ from zrh_domain import hostname
 from machine import PWM, Pin
 
 led2 = PWM(Pin(2))
+led2.freq(500)
+led2.duty(0)
 
 
 def do_connect():
@@ -49,4 +51,4 @@ def do_connect():
 
 
 def on_board_led():
-    led2.freq(500)
+    led2.duty(800)

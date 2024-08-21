@@ -25,7 +25,6 @@ async def set_wifi(request):
     zrh_wifi_nvs = ZrhNvs()
     zrh_wifi_nvs.set_wifi_nvs(ssid, pwd)
     res_json.success("配置wifi完成")
-    ap.active(False)
     asyncio.create_task(reboot())
     return res_json.json()
 
@@ -33,6 +32,7 @@ async def set_wifi(request):
 # 设置wifi成功之后，延时1秒重启设备
 async def reboot():
     await asyncio.sleep(1)
+    ap.active(False)
     machine.reset()
 
 
