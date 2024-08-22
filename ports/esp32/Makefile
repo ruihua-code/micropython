@@ -29,7 +29,7 @@ BUILD ?= build-$(BOARD)
 endif
 
 # Device serial settings.
-PORT ?= /dev/cu.usbmodem11101
+PORT ?= /dev/cu.usbmodem11201
 BAUD ?= 115200
 
 PYTHON ?= python3

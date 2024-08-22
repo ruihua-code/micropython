@@ -55,11 +55,13 @@ def get_off_led(request):
 # 设置wifi成功之后，延时1秒重启设备
 async def reboot():
     await asyncio.sleep(1)
+    ap.active(False)
     machine.reset()
 
 
 # 创建wifi热点，ssid=ESP-AP password=esp123456
 def init_ap():
+    global ap
     ap = network.WLAN(network.AP_IF)
     ap.active(True)
     ap.config(essid='ESP-AP', authmode=network.AUTH_WPA_WPA2_PSK,

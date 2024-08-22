@@ -59,3 +59,7 @@ class ZrhLedBoard:
         ZrhLedBoard.task.cancel()
         ZrhLedBoard.np.fill((0, 0, 0))
         ZrhLedBoard.np.write()
+
+    # 返回颜色值，例如:(100,100,100)
+    def get_led_status(self):
+        return ZrhLedBoard.np[0]
