@@ -4,6 +4,13 @@ from zrh_dht import ZrhDHT
 from zrh_8x8_led import ZrhLedBoard
 from zrh_lcd import ZrhLcd
 from zrh_led_box import ZrhLedBox
+from zrh_wifi_html import html
+from zrh_response_json import ZrhResponseJson
+import json
+from zrh_wifi_nvs import ZrhNvs
+import asyncio
+import machine
+
 
 Response.default_content_type = 'application/json'
 res_json = ZrhResponseJson()
@@ -107,6 +114,30 @@ def get_off_led_box(request):
 def not_found(request):
     res_json.error("not found")
     return res_json.json(), 404
+
+
+# 配置wifi页面
+@app.get("/wifi")
+async def show_wifi_page(request):
+    return html, 200, {'Content-Type': 'text/html'}
+
+
+# 配置wifi接口
+@app.post("/setWifi")
+async def set_wifi(request):
+    bodyJson = json.loads(request.body.decode())
+    ssid = bodyJson['ssid']
+    pwd = bodyJson["password"]
+    zrh_wifi_nvs = ZrhNvs()
+    zrh_wifi_nvs.set_wifi_nvs(ssid, pwd)
+    res_json.success("配置wifi完成")
+    asyncio.create_task(reboot())
+    return res_json.json()
+
+
+async def reboot():
+    await asyncio.sleep(1)
+    machine.reset()
 
 
 async def do_http_api():
