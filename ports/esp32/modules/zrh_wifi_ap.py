@@ -53,7 +53,7 @@ def get_off_led(request):
 
 
 # 设置wifi成功之后，延时1秒重启设备
-async def reboot():
+async def reboot():    
     await asyncio.sleep(1)
     ap.active(False)
     machine.reset()

@@ -2,6 +2,7 @@ import neopixel
 import machine
 import random
 import asyncio
+import time
 
 
 class ZrhLedBoard:
