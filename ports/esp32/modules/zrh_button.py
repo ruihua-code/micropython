@@ -3,19 +3,20 @@ import time
 from zrh_led import ZrhLedBoard
 
 
+zrh_led_board = ZrhLedBoard()
+
+
 def on_start(e):
-    print("通过按钮开关...")
-    zrh_led_board = ZrhLedBoard()
     status = zrh_led_board.get_led_status()
     if status == (0, 0, 0):
-        zrh_led_board.on_led((100, 100, 100))
+        zrh_led_board.on_led((150, 150, 150))
     else:
         zrh_led_board.off_led()
 
 
 # 定义button类
-class button:
-    def __init__(self, pin, callback=None, trigger=machine.Pin.IRQ_RISING, min_ago=200):
+class MyButton:
+    def __init__(self, pin, callback=None, trigger=machine.Pin.IRQ_RISING, min_ago=300):
         # 构造函数初始化
         # pin: GPIO引脚编号
         # callback: 按钮事件触发时调用的回调函数
@@ -56,4 +57,4 @@ class button:
 
 
 def run_listen_button():
-    button(6, on_start)
+    MyButton(6, on_start)

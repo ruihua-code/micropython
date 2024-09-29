@@ -4,7 +4,6 @@ import random
 import asyncio
 import time
 
-
 class ZrhLedBoard:
     num_leds = 64  # LED矩阵中LED的数量
     # 初始化NeoPixel
@@ -12,20 +11,18 @@ class ZrhLedBoard:
     task = None
 
     def on_led(self, color):
-        print("color:", color)
         ZrhLedBoard.np.fill(color)
         ZrhLedBoard.np.write()
 
-    def off_led(self):
-        print("self.task:", ZrhLedBoard.task)
+    def off_led(self):        
         if ZrhLedBoard.task is not None:
             print("检查到任务...")
-            self.off_led_line()
+            self.off_led_line()                
         ZrhLedBoard.np.fill((0, 0, 0))
-        ZrhLedBoard.np.write()
+        ZrhLedBoard.np.write()        
+
 
     # 生成随机的RGB颜色
-
     def random_color():
         red = random.randint(10, 255)
         green = random.randint(10, 255)
