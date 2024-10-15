@@ -8,6 +8,7 @@ zrh_led_board = ZrhLedBoard()
 
 def on_start(e):
     status = zrh_led_board.get_led_status()
+    print("按下:", status)
     if status == (0, 0, 0):
         zrh_led_board.on_led((150, 150, 150))
     else:
@@ -16,7 +17,7 @@ def on_start(e):
 
 # 定义button类
 class MyButton:
-    def __init__(self, pin, callback=None, trigger=machine.Pin.IRQ_RISING, min_ago=300):
+    def __init__(self, pin, callback=None, trigger=machine.Pin.IRQ_RISING, min_ago=200):
         # 构造函数初始化
         # pin: GPIO引脚编号
         # callback: 按钮事件触发时调用的回调函数
@@ -29,7 +30,7 @@ class MyButton:
 
         # 创建并配置Pin对象
         self.pin = machine.Pin(pin, machine.Pin.IN,
-                               machine.Pin.PULL_UP)  # 配置引脚为输入模式，启用上拉电阻
+                               machine.Pin.PULL_DOWN)  # 配置引脚为输入模式，启用下拉电阻
         # 配置中断，使用debounce_handler作为中断处理函数
         self.pin.irq(trigger=trigger, handler=self.debounce_handler)
 
@@ -56,5 +57,5 @@ class MyButton:
         return p  # 返回按钮状态
 
 
-def run_listen_button():
+def run_listen_button(thread_name, flag):
     MyButton(6, on_start)
