@@ -2,7 +2,6 @@ from microdot_asyncio import Microdot, Response
 from zrh_response_json import ZrhResponseJson
 from zrh_dht import ZrhDHT
 from zrh_8x8_led import ZrhLedBoard
-from zrh_lcd import ZrhLcd
 from zrh_led_box import ZrhLedBox
 from zrh_wifi_html import html
 from zrh_response_json import ZrhResponseJson
@@ -74,22 +73,6 @@ def get_off_led(request):
 def get_off_led_line(request):
     zrh_led_board = ZrhLedBoard()
     zrh_led_board.off_led_line()
-    res_json.success("成功")
-    return res_json.json()
-
-
-@app.get("/on_lcd")
-def get_on_lcd(request):
-    lcd = ZrhLcd()
-    lcd.on_lcd()
-    res_json.success("成功")
-    return res_json.json()
-
-
-@app.get("/off_lcd")
-def get_off_lcd(request):
-    lcd = ZrhLcd()
-    lcd.off_lcd()
     res_json.success("成功")
     return res_json.json()
 
