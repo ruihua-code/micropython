@@ -1,61 +1,44 @@
-import machine
+from machine import Pin
 import time
 from zrh_led import ZrhLedBoard
 
+button_pin = Pin(6, Pin.IN, Pin.PULL_UP)  # 设置为上拉输入模式
 
 zrh_led_board = ZrhLedBoard()
 
 
-def on_start(e):
-    status = zrh_led_board.get_led_status()
-    print("按下:", status)
-    if status == (0, 0, 0):
-        zrh_led_board.on_led((150, 150, 150))
-    else:
-        zrh_led_board.off_led()
+DEBOUNCE_DELAY_MS = 20  # 去抖延时
+DEBOUNCE_COUNT = 5  # 去抖检查次数
+
+debounce_counter = 0  # 用于计数稳定低电平的次数
 
 
-# 定义button类
-class MyButton:
-    def __init__(self, pin, callback=None, trigger=machine.Pin.IRQ_RISING, min_ago=200):
-        # 构造函数初始化
-        # pin: GPIO引脚编号
-        # callback: 按钮事件触发时调用的回调函数
-        # trigger: 中断触发类型，如IRQ_RISING或IRQ_FALLING
-        # min_ago: 去抖动时间间隔，单位为毫秒
-        self.callback = callback  # 设置回调函数
-        self.min_ago = min_ago  # 设置去抖动时间间隔
-        self._next_call = time.ticks_add(
-            time.ticks_ms(), self.min_ago)  # 计算下一次调用的时间点
+def handle_interrupt(pin):
+    global debounce_counter
 
-        # 创建并配置Pin对象
-        self.pin = machine.Pin(pin, machine.Pin.IN,
-                               machine.Pin.PULL_DOWN)  # 配置引脚为输入模式，启用下拉电阻
-        # 配置中断，使用debounce_handler作为中断处理函数
-        self.pin.irq(trigger=trigger, handler=self.debounce_handler)
+    # 每次中断时重置计数器
+    debounce_counter = 0
 
-        # 内部状态变量
-        self._is_pressed = False  # 标记按钮是否被按下
+    while debounce_counter < DEBOUNCE_COUNT:
+        if pin.value() == 0:
+            debounce_counter += 1
+            time.sleep_ms(DEBOUNCE_DELAY_MS)
+        else:
+            # 如果在等待期间引脚返回高电平，则重置计数并退出
+            debounce_counter = 0
+            break
 
-    def call_callback(self, pin):
-        # 调用回调函数
-        self._is_pressed = True  # 标记按钮被按下
-        if self.callback is not None:  # 如果有回调函数
-            self.callback(pin)  # 调用回调函数
-
-    def debounce_handler(self, pin):
-        # 中断处理函数，用于去抖动处理
-        if time.ticks_diff(time.ticks_ms(), self._next_call) > 0:  # 检查是否超过了去抖动时间间隔
-            self._next_call = time.ticks_add(
-                time.ticks_ms(), self.min_ago)  # 更新下一次调用的时间点
-            self.call_callback(pin)  # 调用call_callback函数
-
-    def value(self):
-        # 返回按钮的当前状态
-        p = self._is_pressed  # 获取按钮状态
-        self._is_pressed = False  # 清除状态标记
-        return p  # 返回按钮状态
+    if debounce_counter == DEBOUNCE_COUNT:
+        print("切换状态")
+        # 再次检查状态，确保仍然是低电平
+    if pin.value() == 0:
+        status = zrh_led_board.get_led_status()
+        print("zrh按下:", status)
+        if status == (0, 0, 0):
+            zrh_led_board.on_led((150, 150, 150))
+        else:
+            zrh_led_board.off_led()
 
 
-def run_listen_button(thread_name, flag):
-    MyButton(6, on_start)
+def run_listen_button():
+    button_pin.irq(trigger=Pin.IRQ_FALLING, handler=handle_interrupt)
